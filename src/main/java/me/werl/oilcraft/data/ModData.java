@@ -1,8 +1,5 @@
 package me.werl.oilcraft.data;
 
-/**
- * Created by PeterLewis on 2016-08-25.
- */
 public class ModData {
 
     public static final String ID = "oilcraft";

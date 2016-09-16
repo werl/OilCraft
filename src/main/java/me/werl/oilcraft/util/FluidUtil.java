@@ -6,7 +6,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-
 public class FluidUtil {
 
     public static boolean isFluidContainer(ItemStack stack) {

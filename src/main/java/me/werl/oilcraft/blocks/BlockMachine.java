@@ -33,7 +33,6 @@ import scala.tools.cmd.gen.AnyVals;
 
 import javax.annotation.Nullable;
 
-
 public class BlockMachine extends BlockContainer {
 
     public static final IProperty<EnumMachines> MACHINE_TYPE = PropertyEnum.create("machine_type", EnumMachines.class);

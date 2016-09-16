@@ -6,9 +6,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-/**
- * Created by PeterLewis on 2016-08-28.
- */
 @SideOnly(Side.CLIENT)
 public class ClientProxy implements IOilProxy {
 

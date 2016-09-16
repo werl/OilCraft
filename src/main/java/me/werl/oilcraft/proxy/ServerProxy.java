@@ -1,8 +1,5 @@
 package me.werl.oilcraft.proxy;
 
-/**
- * Created by PeterLewis on 2016-08-28.
- */
 public class ServerProxy implements IOilProxy {
 
     @Override

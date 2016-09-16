@@ -6,9 +6,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 
-/**
- * Created by PeterLewis on 2016-08-25.
- */
 public abstract class TileTESLA extends TileInventory {
 
     private TeslaContainer teslaContainer;

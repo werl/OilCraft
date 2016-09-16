@@ -5,9 +5,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 
-/**
- * Created by PeterLewis on 2016-08-29.
- */
 public class CreativeTabOilCraft extends CreativeTabs {
 
     public CreativeTabOilCraft() {

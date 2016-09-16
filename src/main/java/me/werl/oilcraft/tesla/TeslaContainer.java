@@ -6,9 +6,6 @@ import net.darkhax.tesla.api.ITeslaProducer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.INBTSerializable;
 
-/**
- * Created by PeterLewis on 2016-08-25.
- */
 public class TeslaContainer implements ITeslaConsumer, ITeslaProducer, ITeslaHolder, INBTSerializable<NBTTagCompound> {
 
     // amount of TESLA stored

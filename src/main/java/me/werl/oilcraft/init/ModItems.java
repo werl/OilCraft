@@ -7,9 +7,6 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Created by PeterLewis on 2016-09-05.
- */
 public class ModItems {
 
     public static final Set<Item> ITEMS = new HashSet<>();
