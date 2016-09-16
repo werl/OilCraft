@@ -8,9 +8,6 @@ import net.minecraftforge.fml.common.IWorldGenerator;
 
 import java.util.Random;
 
-/**
- * Created by PeterLewis on 2016-08-28.
- */
 public class WorldGenOres implements IWorldGenerator {
 
     //private final WorldGenMinable dirtTar;

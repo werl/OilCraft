@@ -4,6 +4,7 @@ import me.werl.oilcraft.data.ModData;
 import me.werl.oilcraft.init.ModBlocks;
 import me.werl.oilcraft.init.ModFluids;
 import me.werl.oilcraft.init.ModItems;
+import me.werl.oilcraft.init.ModMapGen;
 import me.werl.oilcraft.network.GuiHandler;
 import me.werl.oilcraft.proxy.IOilProxy;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -53,6 +54,8 @@ public class OilCraft {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
+        ModMapGen.registerWorldGenerators();
+
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
 
         proxy.init();
