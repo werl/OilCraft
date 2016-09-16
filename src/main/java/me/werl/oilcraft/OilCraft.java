@@ -1,5 +1,6 @@
 package me.werl.oilcraft;
 
+import me.werl.oilcraft.config.Config;
 import me.werl.oilcraft.data.ModData;
 import me.werl.oilcraft.init.ModBlocks;
 import me.werl.oilcraft.init.ModFluids;
@@ -17,7 +18,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import org.apache.logging.log4j.Logger;
 
 
-@Mod(modid = ModData.ID, name = ModData.NAME, version = ModData.VERSION, dependencies = ModData.DEPS)
+@Mod(modid = ModData.ID, name = ModData.NAME, version = ModData.VERSION, dependencies = ModData.DEPS, guiFactory = ModData.GUI_FACTORY)
 public class OilCraft {
 
     @Mod.Instance(ModData.ID)
@@ -39,6 +40,8 @@ public class OilCraft {
         this.logger = event.getModLog();
 
         creativeTab = new CreativeTabOilCraft();
+
+        Config.load(event);
 
         ModBlocks.registerBlocks();
         ModBlocks.registerTileEntities();
