@@ -1,0 +1,13 @@
+// creative tabs
+itemGroup.oilcraft=Oil Craft
+
+// fluids
+fluid.coolant=Coolant
+tile.oilcraft:fluid.coolant.name=Coolant
+fluid.oil=Oil
+tile.oilcraft:fluid.oil.name=Oil
+
+// blocks
+tile.oilcraft:heat_generator.name=Heat Generator
+
+// items

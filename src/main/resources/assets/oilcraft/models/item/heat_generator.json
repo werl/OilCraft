@@ -1,0 +1,8 @@
+{
+  "parent": "oilcraft:block/cube_rotation",
+  "textures": {
+    "front": "oilcraft:blocks/heat_generator_front",
+    "top": "oilcraft:blocks/base_texture",
+    "side": "oilcraft:blocks/base_texture"
+  }
+}
