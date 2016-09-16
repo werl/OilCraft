@@ -1,7 +1,6 @@
 package me.werl.oilcraft.world.gen;
 
-import me.werl.oilcraft.Config;
-import me.werl.oilcraft.OilCraft;
+import me.werl.oilcraft.config.Config;
 import me.werl.oilcraft.data.FluidData;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -34,7 +33,7 @@ public class WorldGenOil implements IWorldGenerator{
     }
 
     public void generateSurface(World world, Random rand, int blockX, int blockZ) {
-        if(rand.nextDouble() < Config.oilGenChance / 100) {
+        if(rand.nextDouble() < Config.oilGenLakeChance / 100) {
             int y = rand.nextInt(rand.nextInt(128) + 8);
 
             new WorldGenLakes(FluidRegistry.getFluid(FluidData.FLUID_OIL).getBlock())

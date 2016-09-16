@@ -13,4 +13,6 @@ public class ModData {
     public static final String CLIENT_PROXY = "me.werl.oilcraft.proxy.ClientProxy";
     public static final String SERVER_PROXY = "me.werl.oilcraft.proxy.ServerProxy";
 
+    public static final String GUI_FACTORY = "me.werl.oilcraft.config.GuiConfigFactoryOilCraft";
+
 }
