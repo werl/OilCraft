@@ -4,7 +4,7 @@ import me.werl.oilcraft.blocks.BlockMachine;
 import me.werl.oilcraft.tileentity.interfaces.IActivatableTile;
 import me.werl.oilcraft.tileentity.interfaces.IFacingTile;
 import me.werl.oilcraft.util.FuelUtil;
-import me.werl.oilcraft.util.TemperatureUtil;
+import me.werl.oilcraft.util.HeatCalculator;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -47,25 +47,11 @@ public class TileHeatGenerator extends TileInventory implements ITickable, IFaci
     }
 
     private void generateHeat() {
-        double max = maxTemperature;
-        if(temperature == max)
-            return;
-        double step = 0.05f;
-        double change = step + (((max - temperature) / max) * step * 3);
-        //change /= numTanks;
-        temperature += change;
-        temperature = Math.min(temperature, max);
+        temperature = HeatCalculator.generateHeat(temperature, maxTemperature);
     }
 
     private void reduceHeat() {
-        if(temperature == startTemp)
-            return;
-        double step = 0.05;
-        double change = step + ((temperature / maxTemperature) * step * 3);
-        //change /= numTanks;
-        temperature -= change;
-        temperature = Math.max(temperature, startTemp);
-
+        temperature = HeatCalculator.reduceHeat(temperature, this.startTemp, maxTemperature);
     }
 
     // ITickable
@@ -79,16 +65,16 @@ public class TileHeatGenerator extends TileInventory implements ITickable, IFaci
         if(!this.worldObj.isRemote) {
             if(this.firstTick) {
                 this.maxTemperature = 1000;
-                this.temperature = TemperatureUtil.getTempForBiome(this.worldObj, this.pos);
+                this.temperature = HeatCalculator.getTempForBiome(this.worldObj, this.pos);
                 this.startTemp = temperature;
                 firstTick = false;
             }
 
             if(this.isBurning()) {
                 this.generateHeat();
-            } else if (FuelUtil.isBurnable(this.inv[0])) {
-                this.burnTime = FuelUtil.getItemBurnTime(this.inv[0]);
-                this.currentItemBurnTime = FuelUtil.getItemBurnTime(this.inv[0]);
+            } else if (FuelUtil.isBurnableInBoiler(this.inv[0])) {
+                this.burnTime = FuelUtil.getSolidBurnTimeBoiler(this.inv[0]);
+                this.currentItemBurnTime = FuelUtil.getSolidBurnTimeBoiler(this.inv[0]);
                 --this.inv[0].stackSize;
                 if(this.inv[0].stackSize == 0)
                     this.inv[0] = null;
@@ -104,6 +90,8 @@ public class TileHeatGenerator extends TileInventory implements ITickable, IFaci
                 this.isActive = this.isBurning();
             }
         }
+
+
         if(makeDirty)
             this.markDirty();
     }
@@ -170,7 +158,7 @@ public class TileHeatGenerator extends TileInventory implements ITickable, IFaci
     // IInventory Start
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
-        return FuelUtil.isBurnable(stack);
+        return FuelUtil.isBurnableInBoiler(stack);
     }
 
     @Override

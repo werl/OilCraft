@@ -1,46 +1,35 @@
 package me.werl.oilcraft.util;
 
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+
 public class HeatCalculator {
 
-    private static double lowerBound = -200;
-    private static double upperBound = 1000;
-    private static double length = 9; //0.00008
-    private static double height = 0.5; //0.00160095
-    private static double correction = 25;
-    private static double offset = (-(lowerBound - 1)) + correction;
+    public static double HEAT_STEP = 0.05;
 
-    public static double getTempIncrease(double currentTemp) {
-
-        if(currentTemp < lowerBound){
-            currentTemp = lowerBound;
-        }
-        if(currentTemp > upperBound){
-            return -(currentTemp - upperBound);
-        }
-        double tempDelta = deltaTemp(currentTemp);
-        if(tempDelta + currentTemp > upperBound){
-            return upperBound;
-        }
-        return tempDelta;
+    public static double generateHeat(double temp, double max) {
+        if(temp == max)
+            return temp;
+        double change = HEAT_STEP + (((max - temp) / max) * HEAT_STEP * 3);
+        //change /= numTanks;
+        temp += change;
+        temp = Math.min(temp, max);
+        return temp;
     }
 
-    public static double getTempDecrease(double currentTemp) {
+    public static double reduceHeat(double temp, double min, double max) {
+        if(temp == min)
+            return temp;
+        double change = HEAT_STEP + ((temp / max) * HEAT_STEP * 3);
+        //change /= numTanks;
+        temp -= change;
+        temp = Math.max(temp, min);
 
-        if(currentTemp > upperBound){
-            currentTemp = upperBound;
-        }
-        if(currentTemp < lowerBound){
-            return -(currentTemp - upperBound);
-        }
-        double tempDelta =deltaTemp(currentTemp);
-        if(currentTemp - tempDelta < lowerBound){
-            return lowerBound;
-        }
-        return -tempDelta;
+        return temp;
     }
 
-    private static double deltaTemp(double currentTemp) {
-        return (height * (currentTemp + offset)) / (length * (currentTemp + offset) * (currentTemp + offset));
+    public static float getTempForBiome(World world, BlockPos pos) {
+        return 20 * world.getBiomeGenForCoords(pos).getTemperature();
     }
 
 }

@@ -88,7 +88,7 @@ public class ContainerHeatGenerator extends Container {
                     return null;
                 }
             } else {
-                if(FuelUtil.isBurnable(stackInSlot)) {
+                if(FuelUtil.isBurnableInBoiler(stackInSlot)) {
                     if(!this.mergeItemStack(stackInSlot, 0, 1, false)) {
                         return null;
                     }

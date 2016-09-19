@@ -9,7 +9,11 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class FuelUtil {
 
-    public static int getItemBurnTime(ItemStack stack)
+    public static boolean isBurnableInBoiler(ItemStack stack) {
+        return getSolidBurnTimeBoiler(stack) > 0;
+    }
+
+    public static int getSolidBurnTimeBoiler(ItemStack stack)
     {
         if (stack == null)
         {
@@ -49,11 +53,6 @@ public class FuelUtil {
             if (item == Items.BLAZE_ROD) return 2400;
             return GameRegistry.getFuelValue(stack);
         }
-    }
-
-
-    public static boolean isBurnable(ItemStack stack) {
-        return getItemBurnTime(stack) > 0;
     }
 
 }

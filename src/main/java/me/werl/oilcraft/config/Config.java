@@ -15,6 +15,7 @@ public class Config {
 
     public static double oilGenLakeChance;
     public static double oilGenGeyserChance;
+    public static double fuelModifier;
 
     public static void load(FMLPreInitializationEvent event) {
         config = new Configuration(event.getSuggestedConfigurationFile());
@@ -27,6 +28,10 @@ public class Config {
                 "How likely oil lakes are to spawn", LANG_PREFIX + "oil_lake");
         oilGenGeyserChance = config.getFloat("oilGenGeyserChance", Configuration.CATEGORY_GENERAL, 1f, 0f, 50f,
                 "How likely oil geysers are to spawn", LANG_PREFIX + "oil_geyser");
+        fuelModifier = config.getFloat("fuelModifier", Configuration.CATEGORY_GENERAL, 1f, 0f, 10f,
+                "How much fuel it takes to create heat", LANG_PREFIX + "fuel_mod");
+
+        config.save();
     }
 
     @SubscribeEvent
