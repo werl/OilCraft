@@ -9,5 +9,7 @@ tile.oilcraft:fluid.oil.name=Oil
 
 // blocks
 tile.oilcraft:heat_generator.name=Heat Generator
+tile.oilcraft:black_iron.name=Black Iron
 
 // items
+item.oilcraft:item_wrench.name=Wrench

@@ -1,5 +1,6 @@
 package me.werl.oilcraft.init;
 
+import me.werl.oilcraft.blocks.BlockBlackIron;
 import me.werl.oilcraft.blocks.BlockMachine;
 import me.werl.oilcraft.data.ModData;
 import me.werl.oilcraft.items.blocks.ItemMachine;
@@ -19,9 +20,11 @@ public class ModBlocks {
     public static final Set<Block> BLOCKS = new HashSet<>();
 
     public static final BlockMachine BLOCK_MACHINE;
+    public static final BlockBlackIron BLOCK_BLACK_IRON;
 
     static {
         BLOCK_MACHINE = registerBlock(new BlockMachine(), ItemMachine::new);
+        BLOCK_BLACK_IRON = registerBlock(new BlockBlackIron());
     }
 
 

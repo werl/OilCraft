@@ -10,5 +10,4 @@ public class BlockOreGen extends Block {
         super(blockMaterialIn, blockMapColorIn);
     }
 
-
 }
