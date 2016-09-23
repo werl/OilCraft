@@ -1,7 +1,7 @@
 package me.werl.oilcraft.client.gui;
 
 import me.werl.oilcraft.data.ModData;
-import me.werl.oilcraft.inventories.ContainerHeatGenerator;
+import me.werl.oilcraft.inventories.ContainerSBRefinery;
 import me.werl.oilcraft.tileentity.TileHeatGenerator;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -12,14 +12,14 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiHeatGenerator extends GuiContainer {
+public class GuiSBRefinery extends GuiContainer {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(ModData.RESOURCE_PREFIX +
-            "textures/gui/container/heat_generator.png");
+            "textures/gui/container/sb_refinery.png");
     private final IInventory generator;
 
-    public GuiHeatGenerator(InventoryPlayer player, IInventory generator) {
-        super(new ContainerHeatGenerator(player, generator));
+    public GuiSBRefinery(InventoryPlayer player, IInventory generator) {
+        super(new ContainerSBRefinery(player, generator));
 
         this.generator = generator;
     }
@@ -34,11 +34,11 @@ public class GuiHeatGenerator extends GuiContainer {
 
         if (TileHeatGenerator.isBurning(this.generator)) {
             int k = this.getBurnLeftScaled(14);
-            this.drawTexturedModalRect(i + 81, j + 45 + 12 - k, 176, 12 - k, 14, k + 1);
+            this.drawTexturedModalRect(i + 14, j + 59 + 12 - k, 176, 12 - k, 14, k + 1);
         }
 
         int l = getHeatScaled(56);
-        this.drawTexturedModalRect(i + 34, j + 15 + 56 - l, 176, 70 - l, 14, l);
+        this.drawTexturedModalRect(i + 6, j + 15 + 56 - l, 176, 70 - l, 4, l);
     }
 
     private int getBurnLeftScaled(int pixels) {

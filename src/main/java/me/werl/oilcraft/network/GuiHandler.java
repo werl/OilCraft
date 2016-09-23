@@ -1,7 +1,7 @@
 package me.werl.oilcraft.network;
 
-import me.werl.oilcraft.client.gui.GuiHeatGenerator;
-import me.werl.oilcraft.inventories.ContainerHeatGenerator;
+import me.werl.oilcraft.client.gui.GuiSBRefinery;
+import me.werl.oilcraft.inventories.ContainerSBRefinery;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.math.BlockPos;
@@ -17,8 +17,8 @@ public class GuiHandler implements IGuiHandler {
         IInventory tile = (IInventory) world.getTileEntity(new BlockPos(x, y, z));
 
         switch (ID) {
-            case HEAT_GENERATOR_ID:
-                return new ContainerHeatGenerator(player.inventory, tile);
+            case SB_REFINERY_ID:
+                return new ContainerSBRefinery(player.inventory, tile);
             default:
                 return null;
         }
@@ -29,8 +29,8 @@ public class GuiHandler implements IGuiHandler {
         IInventory tile = (IInventory) world.getTileEntity(new BlockPos(x, y, z));
 
         switch (ID) {
-            case HEAT_GENERATOR_ID:
-                return new GuiHeatGenerator(player.inventory, tile);
+            case SB_REFINERY_ID:
+                return new GuiSBRefinery(player.inventory, tile);
             default:
                 return null;
         }

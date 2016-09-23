@@ -2,6 +2,6 @@ package me.werl.oilcraft.data;
 
 public class GuiData {
 
-    public static final int HEAT_GENERATOR_ID = 0;
+    public static final int SB_REFINERY_ID = 0;
 
 }

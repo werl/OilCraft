@@ -6,9 +6,6 @@ import net.minecraftforge.fml.client.IModGuiFactory;
 
 import java.util.Set;
 
-/**
- * Created by PeterLewis on 2016-09-15.
- */
 public class GuiConfigFactoryOilCraft implements IModGuiFactory {
 
     @Override
@@ -26,6 +23,7 @@ public class GuiConfigFactoryOilCraft implements IModGuiFactory {
         return null;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element) {
         return null;

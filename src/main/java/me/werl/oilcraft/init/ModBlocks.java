@@ -5,6 +5,7 @@ import me.werl.oilcraft.blocks.BlockMachine;
 import me.werl.oilcraft.data.ModData;
 import me.werl.oilcraft.items.blocks.ItemMachine;
 import me.werl.oilcraft.tileentity.TileHeatGenerator;
+import me.werl.oilcraft.tileentity.TileSBRefinery;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
@@ -65,7 +66,7 @@ public class ModBlocks {
     }
 
     public static void registerTileEntities() {
-        registerTileEntity(TileHeatGenerator.class);
+        registerTileEntity(TileSBRefinery.class);
     }
 
     private static void registerTileEntity(Class<? extends TileEntity> tileEntityClass) {

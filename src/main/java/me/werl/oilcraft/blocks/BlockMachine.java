@@ -4,6 +4,7 @@ import me.werl.oilcraft.OilCraft;
 import me.werl.oilcraft.data.EnumMachines;
 import me.werl.oilcraft.data.GuiData;
 import me.werl.oilcraft.tileentity.TileHeatGenerator;
+import me.werl.oilcraft.tileentity.TileSBRefinery;
 import me.werl.oilcraft.tileentity.interfaces.IActivatableTile;
 import me.werl.oilcraft.tileentity.interfaces.IFacingTile;
 import net.minecraft.block.BlockContainer;
@@ -137,7 +138,7 @@ public class BlockMachine extends BlockContainer {
     public TileEntity createNewTileEntity(World world, int meta) {
         switch(meta) {
             case 0:
-                return new TileHeatGenerator();
+                return new TileSBRefinery();
             default:
                 return null;
         }
@@ -165,7 +166,7 @@ public class BlockMachine extends BlockContainer {
         else {
             TileEntity tile = worldIn.getTileEntity(pos);
             if(tile instanceof TileHeatGenerator) {
-                playerIn.openGui(OilCraft.instance, GuiData.HEAT_GENERATOR_ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
+                playerIn.openGui(OilCraft.instance, GuiData.SB_REFINERY_ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
             }
             return true;
         }

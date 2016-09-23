@@ -14,7 +14,7 @@ import java.util.function.Predicate;
 /**
  * Borrowed From Buildcraft
  */
-public class Tank extends FluidTank implements INBTSerializable<NBTTagCompound> {
+public class FilteredTank extends FluidTank implements INBTSerializable<NBTTagCompound> {
 
     @Nonnull
     private final String name;
@@ -25,15 +25,15 @@ public class Tank extends FluidTank implements INBTSerializable<NBTTagCompound> 
     /**
      * Creates a tank with the given name and capacity (in milibuckets) with no filter set
      *
-     * @param name Tank name
+     * @param name FilteredTank name
      * @param capacity Amount of fluid held (in milibuckets)
      * @param tile The TileEntity that is using this tank
      */
-    public Tank(@Nonnull String name, int capacity, TileEntity tile) {
+    public FilteredTank(@Nonnull String name, int capacity, TileEntity tile) {
         this(name, capacity, tile, null);
     }
 
-    public Tank(@Nonnull String name, int capacity, TileEntity tile, @Nullable Predicate<FluidStack> filter) {
+    public FilteredTank(@Nonnull String name, int capacity, TileEntity tile, @Nullable Predicate<FluidStack> filter) {
         super(capacity);
         this.name = name;
         this.tile = tile;

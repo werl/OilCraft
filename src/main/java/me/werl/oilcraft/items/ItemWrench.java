@@ -1,6 +1,7 @@
 package me.werl.oilcraft.items;
 
 import me.werl.oilcraft.OilCraft;
+import me.werl.oilcraft.data.ModData;
 import me.werl.oilcraft.tileentity.interfaces.IDismantlable;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,7 +19,7 @@ public class ItemWrench extends Item {
     public ItemWrench() {
         this.setCreativeTab(OilCraft.creativeTab);
         this.setMaxStackSize(1);
-        this.setRegistryName("item_wrench");
+        this.setRegistryName(ModData.ID, "item_wrench");
         this.setUnlocalizedName(getRegistryName().toString());
     }
 

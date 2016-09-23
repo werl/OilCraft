@@ -13,27 +13,31 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 
-public class TileHeatGenerator extends TileInventory implements ITickable, IFacingTile, IActivatableTile {
+public abstract class TileHeatGenerator extends TileInventory implements ITickable, IFacingTile, IActivatableTile {
 
-    private boolean firstTick = true;
+    protected boolean firstTick = true;
 
-    private int burnTime;
-    private int currentItemBurnTime;
-    private double temperature;
-    private double startTemp;
-    private double maxTemperature;
+    protected int burnTime;
+    protected int currentItemBurnTime;
+    protected double temperature;
+    protected double startTemp;
+    protected double maxTemperature;
 
-    private EnumFacing facing;
-    private boolean isActive;
+    protected EnumFacing facing;
+    protected boolean isActive;
 
-    public TileHeatGenerator() {
-        super(1);
+    protected int fuelSlot;
+
+    public TileHeatGenerator(int inventorySize, int fuelSlot) {
+        super(inventorySize);
+        this.fuelSlot = fuelSlot;
     }
 
     public boolean isBurning() {
@@ -96,7 +100,7 @@ public class TileHeatGenerator extends TileInventory implements ITickable, IFaci
             this.markDirty();
     }
 
-    // NBT stuff
+    // NBT start
     @Override
     public void readFromNBT(NBTTagCompound tag) {
         super.readFromNBT(tag);
@@ -104,6 +108,7 @@ public class TileHeatGenerator extends TileInventory implements ITickable, IFaci
         this.burnTime = tag.getInteger("burn_time");
         this.currentItemBurnTime = tag.getInteger("current_item_burn_time");
         this.temperature = tag.getDouble("temperature");
+        this.startTemp = tag.getDouble("start_temp");
         this.maxTemperature = tag.getDouble("max_temperature");
         this.firstTick = tag.getBoolean("first_tick");
 
@@ -118,6 +123,7 @@ public class TileHeatGenerator extends TileInventory implements ITickable, IFaci
         tag.setInteger("burn_time", burnTime);
         tag.setInteger("current_item_burn_time", currentItemBurnTime);
         tag.setDouble("temperature", temperature);
+        tag.setDouble("start_temp", startTemp);
         tag.setDouble("max_temperature", maxTemperature);
         tag.setBoolean("first_tick", firstTick);
 
@@ -126,21 +132,9 @@ public class TileHeatGenerator extends TileInventory implements ITickable, IFaci
 
         return super.writeToNBT(tag);
     }
+    // NBT end
 
-
-
-    // Network Stuff
-    @Override
-    public NBTTagCompound getUpdateTag() {
-        NBTTagCompound tagCompound = new NBTTagCompound();
-
-        tagCompound.setInteger("x", pos.getX());
-        tagCompound.setInteger("y", pos.getY());
-        tagCompound.setInteger("z", pos.getZ());
-
-        return writeToNBT(tagCompound);
-    }
-
+    // Network Start
     @Override
     public void handleUpdateTag(NBTTagCompound tag) {
         readFromNBT(tag);
@@ -150,15 +144,17 @@ public class TileHeatGenerator extends TileInventory implements ITickable, IFaci
         return new SPacketUpdateTileEntity(pos, getBlockMetadata(), writeToNBT(new NBTTagCompound()));
     }
 
+    @Override
     public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
     {
         readFromNBT(pkt.getNbtCompound());
     }
+    // Network end
 
     // IInventory Start
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
-        return FuelUtil.isBurnableInBoiler(stack);
+        return index == fuelSlot && FuelUtil.isBurnableInBoiler(stack);
     }
 
     @Override
@@ -197,16 +193,6 @@ public class TileHeatGenerator extends TileInventory implements ITickable, IFaci
     @Override
     public int getFieldCount() {
         return 4;
-    }
-
-    @Override
-    public String getName() {
-        return null;
-    }
-
-    @Override
-    public boolean hasCustomName() {
-        return false;
     }
     // IInventory End
 

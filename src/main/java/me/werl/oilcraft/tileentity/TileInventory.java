@@ -6,11 +6,10 @@ import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.tileentity.TileEntity;
 
 import javax.annotation.Nullable;
 
-public abstract class TileInventory extends TileEntity implements IInventory {
+public abstract class TileInventory extends TileBase implements IInventory {
 
     protected ItemStack[] inv;
 

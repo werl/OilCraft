@@ -10,17 +10,21 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 
-public class ContainerHeatGenerator extends Container {
+public class ContainerSBRefinery extends Container {
 
     private final IInventory generator;
     private int burnTime;
     private int currentItemBurnTime;
 
 
-    public ContainerHeatGenerator(InventoryPlayer playerInventory, IInventory generator) {
+    public ContainerSBRefinery(InventoryPlayer playerInventory, IInventory generator) {
         this.generator = generator;
 
-        this.addSlotToContainer(new SlotFurnaceFuel(generator, 0, 80, 25));
+        this.addSlotToContainer(new SlotFurnaceFuel(generator, 0, 13, 39));
+        this.addSlotToContainer(new Slot(generator, 1, 56, 19));
+        this.addSlotToContainer(new Slot(generator, 2, 56, 51));
+        this.addSlotToContainer(new Slot(generator, 3, 104, 19));
+        this.addSlotToContainer(new Slot(generator, 4, 104, 51));
 
         for (int i = 0; i < 3; ++i)
         {

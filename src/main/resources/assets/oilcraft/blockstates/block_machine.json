@@ -21,14 +21,14 @@
         "y": 270
       }
     },
-    "active=false,facing=north,machine_type=heat_generator": [{
+    "active=false,facing=north,machine_type=sb_refinery": [{
       "textures": {
         "front": "oilcraft:blocks/heat_generator_front",
         "top": "oilcraft:blocks/base_texture",
         "side": "oilcraft:blocks/base_texture"
       }
     }],
-    "active=false,facing=east,machine_type=heat_generator": [{
+    "active=false,facing=east,machine_type=sb_refinery": [{
       "textures": {
         "front": "oilcraft:blocks/heat_generator_front",
         "top": "oilcraft:blocks/base_texture",
@@ -36,7 +36,7 @@
       },
       "y": 90
     }]
-    ,"active=false,facing=south,machine_type=heat_generator": [{
+    ,"active=false,facing=south,machine_type=sb_refinery": [{
       "textures": {
         "front": "oilcraft:blocks/heat_generator_front",
         "top": "oilcraft:blocks/base_texture",
@@ -44,7 +44,7 @@
       },
       "y": 180
     }],
-    "active=false,facing=west,machine_type=heat_generator": [{
+    "active=false,facing=west,machine_type=sb_refinery": [{
       "textures": {
         "front": "oilcraft:blocks/heat_generator_front",
         "top": "oilcraft:blocks/base_texture",
@@ -52,14 +52,14 @@
       },
       "y": 270
     }],
-    "active=true,facing=north,machine_type=heat_generator": [{
+    "active=true,facing=north,machine_type=sb_refinery": [{
       "textures": {
         "front": "oilcraft:blocks/heat_generator_front_on",
         "top": "oilcraft:blocks/base_texture",
         "side": "oilcraft:blocks/base_texture"
       }
     }],
-    "active=true,facing=east,machine_type=heat_generator": [{
+    "active=true,facing=east,machine_type=sb_refinery": [{
       "textures": {
         "front": "oilcraft:blocks/heat_generator_front_on",
         "top": "oilcraft:blocks/base_texture",
@@ -67,7 +67,7 @@
       },
       "y": 90
     }],
-    "active=true,facing=south,machine_type=heat_generator": [{
+    "active=true,facing=south,machine_type=sb_refinery": [{
       "textures": {
         "front": "oilcraft:blocks/heat_generator_front_on",
         "top": "oilcraft:blocks/base_texture",
@@ -75,7 +75,7 @@
       },
       "y": 180
     }],
-    "active=true,facing=west,machine_type=heat_generator": [{
+    "active=true,facing=west,machine_type=sb_refinery": [{
       "textures": {
         "front": "oilcraft:blocks/heat_generator_front_on",
         "top": "oilcraft:blocks/base_texture",

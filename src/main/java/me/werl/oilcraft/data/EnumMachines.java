@@ -4,7 +4,7 @@ import net.minecraft.util.IStringSerializable;
 
 public enum EnumMachines implements IStringSerializable {
 
-    HEAT_GENERATOR("heat_generator");
+    SB_REFINERY("sb_refinery");
 
     private final String name;
 
