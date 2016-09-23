@@ -15,6 +15,8 @@ public class ContainerSBRefinery extends Container {
     private final IInventory generator;
     private int burnTime;
     private int currentItemBurnTime;
+    private int heat;
+    private int maxHeat;
 
 
     public ContainerSBRefinery(InventoryPlayer playerInventory, IInventory generator) {
@@ -61,10 +63,18 @@ public class ContainerSBRefinery extends Container {
             if(this.currentItemBurnTime != this.generator.getField(1)) {
                 listener.sendProgressBarUpdate(this, 1, this.generator.getField(1));
             }
+            if(this.heat != this.generator.getField(2)) {
+                listener.sendProgressBarUpdate(this, 2, this.generator.getField(2));
+            }
+            if(this.maxHeat != this.generator.getField(3)) {
+                listener.sendProgressBarUpdate(this, 3, this.generator.getField(3));
+            }
         }
 
         this.burnTime = this.generator.getField(0);
         this.currentItemBurnTime = this.generator.getField(1);
+        this.heat = this.generator.getField(2);
+        this.maxHeat = this.generator.getField(3);
     }
 
     @SideOnly(Side.CLIENT)
