@@ -1,7 +1,7 @@
 package me.werl.oilcraft.network;
 
 import me.werl.oilcraft.client.gui.GuiSBRefinery;
-import me.werl.oilcraft.inventories.ContainerSBRefinery;
+import me.werl.oilcraft.inventory.ContainerSBRefinery;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.math.BlockPos;

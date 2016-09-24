@@ -1,5 +1,6 @@
 package me.werl.oilcraft.tileentity;
 
+import me.werl.oilcraft.data.FluidData;
 import me.werl.oilcraft.fluids.tanks.FilteredTank;
 import me.werl.oilcraft.util.FluidUtil;
 import net.minecraft.item.ItemStack;
@@ -25,10 +26,42 @@ public class TileSBRefinery extends TileHeatGenerator {
         super(5, 0);
     }
 
-    // ITickable
+    // ITickable start
     @Override
     public void update() {
         super.update();
+
+        if(!worldObj.isRemote) {
+            if(canDrainItem(1,2)) {
+                if(FluidUtil.fillTankFromContainer(inputTank, inv[1], true) > 0) {
+                    if(inv[1].getItem().hasContainerItem(inv[1])) {
+                        ItemStack container = inv[1].getItem().getContainerItem(inv[1]);
+                        if(inv[2] == null) {
+                            inv[2] = container;
+                        } else {
+                            inv[2].stackSize++;
+                        }
+                    }
+                    inv[1].stackSize--;
+                    if(inv[1].stackSize == 0) {
+                        inv[1] = null;
+                    }
+                }
+            }
+        }
+    }
+    // ITickable end
+
+    private boolean canDrainItem(int in, int out) {
+        if(inv[in] == null)
+            return false;
+        if(inv[out] == null || inv[out].isItemEqual(inv[in].getItem().getContainerItem(inv[in]))) {
+            if(FluidUtil.isFluidInContainer(FluidData.FLUID_OIL, inv[in])) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     // NBT start
@@ -72,7 +105,7 @@ public class TileSBRefinery extends TileHeatGenerator {
 
     @Override
     public int getFieldCount() {
-        return 0;
+        return super.getFieldCount();
     }
 
     @Override

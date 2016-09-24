@@ -1,7 +1,7 @@
 package me.werl.oilcraft.client.gui;
 
 import me.werl.oilcraft.data.ModData;
-import me.werl.oilcraft.inventories.ContainerSBRefinery;
+import me.werl.oilcraft.inventory.ContainerSBRefinery;
 import me.werl.oilcraft.tileentity.TileHeatGenerator;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;

@@ -1,8 +1,10 @@
 package me.werl.oilcraft.util;
 
+import me.werl.oilcraft.data.FluidData;
 import me.werl.oilcraft.fluids.tanks.FilteredTank;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidTank;
@@ -47,6 +49,14 @@ public class FluidUtil {
         return 0;
     }
 
+
+    /**
+     *
+     *
+     * @param test
+     * @param provider
+     * @return Returns if there is the same fluid in the container as is provided, BUT also returns true if @test is null
+     */
     public static boolean isFluidInContainer(FluidStack test, ICapabilityProvider provider) {
         if(isFluidContainer(provider)) {
             if(test == null)
@@ -62,6 +72,30 @@ public class FluidUtil {
             }
         }
         return false;
+    }
+
+    public static boolean isFluidInContainer(String fluidName, ICapabilityProvider provider) {
+        FluidStack stack = FluidRegistry.getFluidStack(FluidData.FLUID_OIL, 1);
+
+        return isFluidInContainer(stack, provider);
+    }
+
+    public static int getContainedFluidAmount(ICapabilityProvider provider) {
+        if(isFluidContainer(provider)) {
+            List<IFluidTankProperties> props = getFluidTankPropsFromContainer(provider);
+            if(props == null)
+                return 0;
+
+            for(IFluidTankProperties prop : props) {
+                if(prop == null)
+                    continue;
+                if(prop.getContents() == null)
+                    return 0;
+                else
+                    return prop.getContents().amount;
+            }
+        }
+        return 0;
     }
 
 }
