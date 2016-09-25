@@ -17,6 +17,13 @@
           "fluid": "coolant"
         }
       }
+    ],
+    "fuel": [
+      {
+        "custom": {
+          "fluid": "fuel"
+        }
+      }
     ]
   }
 }

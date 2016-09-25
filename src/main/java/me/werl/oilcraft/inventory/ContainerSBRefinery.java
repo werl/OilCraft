@@ -3,7 +3,6 @@ package me.werl.oilcraft.inventory;
 import me.werl.oilcraft.data.FluidData;
 import me.werl.oilcraft.inventory.slot.SlotFluid;
 import me.werl.oilcraft.inventory.slot.SlotOutput;
-import me.werl.oilcraft.util.FluidUtil;
 import me.werl.oilcraft.util.FuelUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -11,6 +10,8 @@ import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -116,13 +117,17 @@ public class ContainerSBRefinery extends Container {
                         if (!this.mergeItemStack(stackInSlot, 0, 1, false)) {
                             return null;
                         }
-                    } else if(FluidUtil.isFluidContainer(stackInSlot) && FluidUtil.isFluidInContainer(new FluidStack(FluidRegistry.getFluid(FluidData.FLUID_OIL), 1), stackInSlot)) {
-                        if(!this.mergeItemStack(stackInSlot, 1, 2, false)) {
-                            return null;
+                    } else if(stackInSlot.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null)) {
+                        if(FluidUtil.getFluidContained(stackInSlot) != null && FluidUtil.getFluidContained(stackInSlot).amount > 0) {
+                            if (!this.mergeItemStack(stackInSlot, 1, 2, false)) {
+                                return null;
+                            }
                         }
-                    } else if(FluidUtil.isFluidContainer(stackInSlot) && FluidUtil.getContainedFluidAmount(stackInSlot) == 0) {
-                        if(!this.mergeItemStack(stackInSlot, 3, 4, false)) {
-                            return null;
+                    } else if(stackInSlot.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null)) {
+                        if(FluidUtil.getFluidContained(stackInSlot) == null || FluidUtil.getFluidContained(stackInSlot).amount == 0) {
+                            if (!this.mergeItemStack(stackInSlot, 3, 4, false)) {
+                                return null;
+                            }
                         }
                     }else if (index >= 5 && index < 32) {
                         if (!this.mergeItemStack(stackInSlot, 32, 41, false)) {

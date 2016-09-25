@@ -1,9 +1,9 @@
 package me.werl.oilcraft.inventory.slot;
 
-import me.werl.oilcraft.util.FluidUtil;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
 import javax.annotation.Nullable;
 
@@ -14,6 +14,6 @@ public class SlotFluid extends Slot {
 
     public boolean isItemValid(@Nullable ItemStack stack)
     {
-        return FluidUtil.isFluidContainer(stack);
+        return stack != null && stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
     }
 }

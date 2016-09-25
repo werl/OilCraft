@@ -6,10 +6,11 @@ import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nullable;
 
-public abstract class TileInventory extends TileBase implements IInventory {
+public abstract class TileInventory extends TileBase implements IInventory, IItemHandler {
 
     protected ItemStack[] inv;
 
@@ -17,6 +18,7 @@ public abstract class TileInventory extends TileBase implements IInventory {
         this.inv = new ItemStack[slots];
     }
 
+    // NBT start
     @Override
     public void readFromNBT(NBTTagCompound tag) {
         NBTTagList nbttaglist = tag.getTagList("items", 10);
@@ -54,8 +56,9 @@ public abstract class TileInventory extends TileBase implements IInventory {
 
         return super.writeToNBT(tag);
     }
+    // NBT end
 
-    // IInventory
+    // IInventory start
     @Override
     public void setInventorySlotContents(int index, @Nullable ItemStack stack) {
         this.inv[index] = stack;
@@ -120,4 +123,22 @@ public abstract class TileInventory extends TileBase implements IInventory {
     public void closeInventory(EntityPlayer player) {
 
     }
+    // IInventory end
+
+    // Helper Methods start
+    /**
+     * Used to try and merge two ItemStacks
+     * @param dest The slot that will get changed
+     * @param newStack The stack that is being added
+     * @param doMerge If it should be done or just simulated
+     * @return The ItemStack left over from the merge
+     */
+    public ItemStack tryMergeStacks(int dest, ItemStack newStack, boolean doMerge) {
+        if(!doMerge) {
+
+        }
+
+        return newStack;
+    }
+    // Helper Methods end
 }

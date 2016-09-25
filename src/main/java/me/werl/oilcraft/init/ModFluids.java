@@ -5,6 +5,7 @@ import me.werl.oilcraft.blocks.material.OCMaterialFluid;
 import me.werl.oilcraft.data.FluidData;
 import me.werl.oilcraft.data.ModData;
 import me.werl.oilcraft.fluids.BlockFluidCoolant;
+import me.werl.oilcraft.fluids.BlockFluidFuel;
 import me.werl.oilcraft.fluids.BlockFluidOil;
 import me.werl.oilcraft.fluids.BlockFluidOilC;
 import net.minecraft.block.Block;
@@ -23,6 +24,7 @@ public class ModFluids {
 
     public static final Fluid OIL;
     public static final Fluid COOLANT;
+    public static final Fluid FUEL;
 
     /**
      * The fluids registered by this mod. Includes fluids that were already registered by another mod.
@@ -39,6 +41,8 @@ public class ModFluids {
                 fluid -> fluid.setLuminosity(0).setDensity(800).setViscosity(10000), BlockFluidOil::new);
         COOLANT = createFluid(FluidData.FLUID_COOLANT, true,
                 fluid -> fluid.setLuminosity(0).setDensity(250).setViscosity(250), BlockFluidCoolant::new);
+        FUEL = createFluid(FluidData.FLUID_FUEL, true,
+                fluid -> fluid.setLuminosity(0).setDensity(400).setViscosity(800), BlockFluidFuel::new);
     }
 
     public static void registerFluids() {
