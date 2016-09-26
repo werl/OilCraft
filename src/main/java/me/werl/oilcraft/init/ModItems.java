@@ -1,38 +1,45 @@
 package me.werl.oilcraft.init;
 
+import me.werl.oilcraft.data.ModData;
 import me.werl.oilcraft.items.ItemWrench;
 import net.minecraft.item.Item;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.IForgeRegistry;
 
 import java.util.HashSet;
 import java.util.Set;
 
+@GameRegistry.ObjectHolder(ModData.ID)
 public class ModItems {
 
-    public static final Set<Item> ITEMS = new HashSet<>();
+    @GameRegistry.ObjectHolder("item_wrench")
+    public static final ItemWrench WRENCH = new ItemWrench();
 
-    public static final ItemWrench WRENCH;
+    @Mod.EventBusSubscriber
+    public static class RegistrationHandler {
+        public static final Set<Item> ITEMS = new HashSet<>();
 
-    static {
-        WRENCH = registerItem(new ItemWrench());
-    }
+        /**
+         * Register this mod's {@link Item}s.
+         *
+         * @param event The event
+         */
+        @SubscribeEvent
+        public static void registerItems(RegistryEvent.Register<Item> event) {
+            final Item[] items = {
+                    WRENCH
+            };
 
-    public static void registerItems() {
-        // Dummy method to make sure the static initialiser runs
-    }
+            final IForgeRegistry<Item> registry = event.getRegistry();
 
-    /**
-     * Register an Item
-     *
-     * @param item The Item instance
-     * @param <T>  The Item type
-     * @return The Item instance
-     */
-    private static <T extends Item> T registerItem(T item) {
-        GameRegistry.register(item);
-        ITEMS.add(item);
-
-        return item;
+            for (final Item item : items) {
+                registry.register(item);
+                ITEMS.add(item);
+            }
+        }
     }
 
 }

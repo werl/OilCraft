@@ -67,20 +67,20 @@ public abstract class TileHeatGenerator extends TileInventory implements ITickab
         if(this.isBurning())
             --this.burnTime;
         if(!this.worldObj.isRemote) {
-            if(this.firstTick) {
+            if (this.firstTick) {
                 this.maxTemperature = 1000;
                 this.temperature = HeatCalculator.getTempForBiome(this.worldObj, this.pos);
                 this.startTemp = temperature;
                 firstTick = false;
             }
 
-            if(this.isBurning()) {
+            if (this.isBurning()) {
                 this.generateHeat();
             } else if (FuelUtil.isBurnableInBoiler(this.inv[0])) {
                 this.burnTime = FuelUtil.getSolidBurnTimeBoiler(this.inv[0]);
                 this.currentItemBurnTime = FuelUtil.getSolidBurnTimeBoiler(this.inv[0]);
                 --this.inv[0].stackSize;
-                if(this.inv[0].stackSize == 0)
+                if (this.inv[0].stackSize == 0)
                     this.inv[0] = null;
                 this.generateHeat();
                 makeDirty = true;
@@ -88,13 +88,12 @@ public abstract class TileHeatGenerator extends TileInventory implements ITickab
                 reduceHeat();
                 makeDirty = true;
             }
-            if(currentActive != isBurning()) {
+            if (currentActive != isBurning()) {
                 makeDirty = true;
                 BlockMachine.setState(this.isBurning(), facing, worldObj, pos);
                 this.isActive = this.isBurning();
             }
         }
-
 
         if(makeDirty)
             this.markDirty();
@@ -202,9 +201,9 @@ public abstract class TileHeatGenerator extends TileInventory implements ITickab
     }
 
     public void setFacing(EnumFacing facing) {
+        if(facing == null)
+            return;
         this.facing = facing;
-        if(this.facing == null)
-            this.facing = EnumFacing.SOUTH;
         this.markDirty();
     }
     // IFacingTile end

@@ -1,14 +1,13 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "oilcraft:cube_all",
+    "model": "minecraft:cube_all",
     "textures": {
       "all": "oilcraft:blocks/black_iron"
-    },
-    "transform": "forge:default-block"
+    }
   },
   "variants": {
-    "normal": [{}],
-    "inventory": [{}]
+    "normal": [ { } ],
+    "inventory": [ { } ]
   }
 }

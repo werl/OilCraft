@@ -42,9 +42,7 @@ public class OilCraft {
 
         Config.load(event);
 
-        ModBlocks.registerBlocks();
         ModBlocks.registerTileEntities();
-        ModItems.registerItems();
         ModFluids.registerFluids();
         ModFluids.registerFluidContainers();
 

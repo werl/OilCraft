@@ -1,8 +1,8 @@
 package me.werl.oilcraft.data;
 
-import net.minecraft.util.IStringSerializable;
+import me.werl.oilcraft.util.IVariant;
 
-public enum EnumMachines implements IStringSerializable {
+public enum EnumMachines implements IVariant {
 
     SB_REFINERY("sb_refinery");
 
@@ -20,6 +20,11 @@ public enum EnumMachines implements IStringSerializable {
     @Override
     public String toString() {
         return name;
+    }
+
+    @Override
+    public int getMeta() {
+        return this.ordinal();
     }
 
 }

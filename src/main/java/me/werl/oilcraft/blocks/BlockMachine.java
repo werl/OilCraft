@@ -3,6 +3,7 @@ package me.werl.oilcraft.blocks;
 import me.werl.oilcraft.OilCraft;
 import me.werl.oilcraft.data.EnumMachines;
 import me.werl.oilcraft.data.GuiData;
+import me.werl.oilcraft.data.ModData;
 import me.werl.oilcraft.tileentity.TileHeatGenerator;
 import me.werl.oilcraft.tileentity.TileSBRefinery;
 import me.werl.oilcraft.tileentity.interfaces.IActivatableTile;
@@ -42,7 +43,7 @@ public class BlockMachine extends BlockContainer {
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(ACTIVE, false));
         this.setCreativeTab(OilCraft.creativeTab);
 
-        this.setRegistryName("block_machine");
+        this.setRegistryName(ModData.ID, "block_machine");
         this.setUnlocalizedName(this.getRegistryName().toString());
     }
 
@@ -118,6 +119,8 @@ public class BlockMachine extends BlockContainer {
 
     public void setTileFacing(EnumFacing facing, IBlockAccess world, BlockPos pos) {
         TileEntity tile = world.getTileEntity(pos);
+        if(facing == null)
+            return;
 
         if(tile instanceof IFacingTile)
             ((IFacingTile)tile).setFacing(facing);
@@ -174,15 +177,15 @@ public class BlockMachine extends BlockContainer {
 
     @Override
     public boolean rotateBlock(World world, BlockPos pos, EnumFacing axis) {
-        IBlockState state = world.getBlockState(pos);
-        for (IProperty<?> prop : state.getProperties().keySet())
-        {
-            if (prop.getName().equals("facing") || prop.getName().equals("rotation"))
-            {
-                world.setBlockState(pos, state.cycleProperty(prop));
-                return true;
-            }
-        }
+//        EnumFacing facing = getTileFacing(world, pos);
+//        if(facing == null)
+//            return false;
+//        facing = facing.rotateAround(EnumFacing.Axis.Y);
+//
+//        this.setTileFacing(facing, world, pos);
+//        System.out.println(facing.getName() + axis);
+//
+//        return true;
         return false;
     }
 
@@ -196,6 +199,8 @@ public class BlockMachine extends BlockContainer {
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         EnumFacing facing = getTileFacing(worldIn, pos);
         boolean isActive = getTileActive(worldIn, pos);
+        if(facing == null)
+            facing = EnumFacing.NORTH;
 
         return state.withProperty(FACING, facing).withProperty(ACTIVE, isActive);
     }

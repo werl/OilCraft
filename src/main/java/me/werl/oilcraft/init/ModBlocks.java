@@ -4,65 +4,67 @@ import me.werl.oilcraft.blocks.BlockBlackIron;
 import me.werl.oilcraft.blocks.BlockMachine;
 import me.werl.oilcraft.data.ModData;
 import me.werl.oilcraft.items.blocks.ItemMachine;
-import me.werl.oilcraft.tileentity.TileHeatGenerator;
 import me.werl.oilcraft.tileentity.TileSBRefinery;
 import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.IForgeRegistry;
 
-import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Function;
 
+@GameRegistry.ObjectHolder(ModData.ID)
 public class ModBlocks {
 
-    public static final Set<Block> BLOCKS = new HashSet<>();
+    @GameRegistry.ObjectHolder("block_machine")
+    public static final BlockMachine BLOCK_MACHINE = new BlockMachine();
+    @GameRegistry.ObjectHolder("black_iron")
+    public static final BlockBlackIron BLOCK_BLACK_IRON = new BlockBlackIron();
 
-    public static final BlockMachine BLOCK_MACHINE;
-    public static final BlockBlackIron BLOCK_BLACK_IRON;
+    @Mod.EventBusSubscriber
+    public static class RegistrationHandler {
 
-    static {
-        BLOCK_MACHINE = registerBlock(new BlockMachine(), ItemMachine::new);
-        BLOCK_BLACK_IRON = registerBlock(new BlockBlackIron());
-    }
+        public static final Set<ItemBlock> ITEM_BLOCKS = new HashSet<>();
 
+        /**
+         * Register this mods {@link Block}s
+         *
+         * @param event The event
+         */
+        @SubscribeEvent
+        public static void registerBlocks(RegistryEvent.Register<Block> event) {
+            final IForgeRegistry<Block> registry = event.getRegistry();
 
-    public static void registerBlocks() {
-        // Dummy method to make sure static initializer runs
-    }
-
-    /**
-     * Register a Block with the default ItemBlock class.
-     *
-     * @param block   The Block instance
-     * @param <BLOCK> The Block type
-     * @return The Block instance
-     */
-    protected static <BLOCK extends Block> BLOCK registerBlock(BLOCK block) {
-        return registerBlock(block, ItemBlock::new);
-    }
-
-    /**
-     * Register a Block with a custom ItemBlock class.
-     *
-     * @param <BLOCK>     The Block type
-     * @param block       The Block instance
-     * @param itemFactory A function that creates the ItemBlock instance, or null if no ItemBlock should be created
-     * @return The Block instance
-     */
-    protected static <BLOCK extends Block> BLOCK registerBlock(BLOCK block, @Nullable Function<BLOCK, ItemBlock> itemFactory) {
-        GameRegistry.register(block);
-
-        if (itemFactory != null) {
-            final ItemBlock itemBlock = itemFactory.apply(block);
-
-            GameRegistry.register(itemBlock.setRegistryName(block.getRegistryName()));
+            registry.registerAll(
+                    BLOCK_MACHINE,
+                    BLOCK_BLACK_IRON
+            );
         }
 
-        BLOCKS.add(block);
-        return block;
+        /**
+         * Register this mod's {@link ItemBlock}s.
+         *
+         * @param event The event
+         */
+        @SubscribeEvent
+        public static void registerItemBlocks(RegistryEvent.Register<Item> event) {
+            final ItemBlock[] items = {
+                    new ItemMachine(BLOCK_MACHINE),
+                    new ItemBlock(BLOCK_BLACK_IRON)
+            };
+
+            final IForgeRegistry<Item> registry = event.getRegistry();
+
+            for (final ItemBlock item : items) {
+                registry.register(item.setRegistryName(item.getBlock().getRegistryName()));
+                ITEM_BLOCKS.add(item);
+            }
+        }
     }
 
     public static void registerTileEntities() {

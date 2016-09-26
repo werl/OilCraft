@@ -28,7 +28,6 @@ public class ClientProxy implements IOilProxy {
 
     @Override
     public void renderingInit() {
-        ModModelManager.INSTANCE.registerAllModels();
     }
 
 }
