@@ -89,7 +89,8 @@ public class TileSBRefinery extends TileHeatGenerator {
             }
 
             if(tracker.markTimeIfDelay(worldObj) && temperature >= workTemp) {
-                if(inputTank.canDrainFluidType(new FluidStack(ModFluids.OIL, mbPerCycle)) && outputTank.canFillFluidType(new FluidStack(ModFluids.FUEL, mbPerCycle))) {
+                if(inputTank.getFluid() != null && inputTank.getFluidAmount() >= mbPerCycle
+                        && outputTank.canFillFluidType(new FluidStack(ModFluids.FUEL, mbPerCycle))) {
                     inputTank.drain(new FluidStack(ModFluids.OIL, mbPerCycle), true);
                     outputTank.fill(new FluidStack(ModFluids.FUEL, mbPerCycle), true);
                     tankDirty = true;
