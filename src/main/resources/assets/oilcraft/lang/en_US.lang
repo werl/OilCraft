@@ -6,9 +6,11 @@ fluid.coolant=Coolant
 tile.oilcraft:fluid.coolant.name=Coolant
 fluid.oil=Oil
 tile.oilcraft:fluid.oil.name=Oil
+fluid.fuel=Fuel
+tile.oilcraft:fluid.fuel.name=Fuel
 
 // blocks
-tile.oilcraft:heat_generator.name=Heat Generator
+tile.oilcraft:sb_refinery.name=Oil Refinery
 tile.oilcraft:black_iron.name=Black Iron
 
 // items

@@ -2,6 +2,8 @@ package me.werl.oilcraft.tileentity;
 
 import me.werl.oilcraft.fluids.tanks.FilteredTank;
 import me.werl.oilcraft.init.ModFluids;
+import me.werl.oilcraft.network.PacketHandler;
+import me.werl.oilcraft.network.PacketSBRTank;
 import me.werl.oilcraft.util.SafeTimeTracker;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -26,8 +28,8 @@ public class TileSBRefinery extends TileHeatGenerator {
     private List<EnumFacing> outputFaces = new ArrayList<>();
     private List<EnumFacing> inputFaces = new ArrayList<>();
 
-    private FilteredTank inputTank = new FilteredTank("input", 16 * Fluid.BUCKET_VOLUME, this);
-    private FilteredTank outputTank = new FilteredTank("output", 16 * Fluid.BUCKET_VOLUME, this);
+    public FilteredTank inputTank = new FilteredTank("input", 16 * Fluid.BUCKET_VOLUME, this);
+    public FilteredTank outputTank = new FilteredTank("output", 16 * Fluid.BUCKET_VOLUME, this);
 
     private double workTemp = 400;
 
@@ -41,6 +43,8 @@ public class TileSBRefinery extends TileHeatGenerator {
         super.update();
 
         if(!worldObj.isRemote) {
+            boolean tankDirty = false;
+
             if(canDrainItem(1, 2)) {
                 ItemStack container = inv[1].getItem().getContainerItem(inv[1]);
                 if(FluidUtil.tryFluidTransfer(inputTank, FluidUtil.getFluidHandler(inv[1]), inputTank.getCapacity() - inputTank.getFluidAmount(), true) != null) {
@@ -55,6 +59,7 @@ public class TileSBRefinery extends TileHeatGenerator {
                     if(inv[1].stackSize == 0) {
                         inv[1] = null;
                     }
+                    tankDirty = true;
                 }
             }
             if(inv[3] != null && inv[3].hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null)) {
@@ -66,14 +71,18 @@ public class TileSBRefinery extends TileHeatGenerator {
                             if(inv[3].stackSize == 0) {
                                 inv[3] = null;
                             }
-                            inv[4] = FluidUtil.tryFillContainer(inv[3], outputTank, outputTank.getFluidAmount(), null, true);
-                        } else if(inv[4].stackSize <= inv[4].getItem().getItemStackLimit(inv[4])) {
+                            if(inv[3] != null) {
+                                inv[4] = FluidUtil.tryFillContainer(inv[3], outputTank, outputTank.getFluidAmount(), null, true);
+                                tankDirty = true;
+                            }
+                        } else if(inv[4].stackSize < inv[4].getItem().getItemStackLimit(inv[4])) {
                             FluidUtil.tryFillContainer(inv[3], outputTank, outputTank.getFluidAmount(), null, true);
                             inv[3].stackSize --;
                             if(inv[3].stackSize == 0) {
                                 inv[3] = null;
                             }
                             inv[4].stackSize ++;
+                            tankDirty = true;
                         }
                     }
                 }
@@ -83,10 +92,14 @@ public class TileSBRefinery extends TileHeatGenerator {
                 if(inputTank.canDrainFluidType(new FluidStack(ModFluids.OIL, mbPerCycle)) && outputTank.canFillFluidType(new FluidStack(ModFluids.FUEL, mbPerCycle))) {
                     inputTank.drain(new FluidStack(ModFluids.OIL, mbPerCycle), true);
                     outputTank.fill(new FluidStack(ModFluids.FUEL, mbPerCycle), true);
+                    tankDirty = true;
                 }
             }
             if(temperature < workTemp) {
                 tracker.markTime(worldObj);
+            }
+            if(tankDirty) {
+                PacketHandler.sendToAllAround(new PacketSBRTank(this), this);
             }
         }
     }
