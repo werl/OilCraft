@@ -1,5 +1,9 @@
 package me.werl.oilcraft.proxy;
 
+import net.minecraft.entity.player.EntityPlayer;
+
+import javax.annotation.Nullable;
+
 public class ServerProxy implements IOilProxy {
 
     @Override
@@ -19,6 +23,12 @@ public class ServerProxy implements IOilProxy {
 
     @Override
     public void renderingInit() {
+    }
+
+    @Nullable
+    @Override
+    public EntityPlayer getClientPlayer() {
+        return null;
     }
 
 }

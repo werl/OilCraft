@@ -7,6 +7,8 @@ import me.werl.oilcraft.init.ModFluids;
 import me.werl.oilcraft.init.ModItems;
 import me.werl.oilcraft.init.ModMapGen;
 import me.werl.oilcraft.network.GuiHandler;
+import me.werl.oilcraft.network.PacketHandler;
+import me.werl.oilcraft.network.PacketSBRTank;
 import me.werl.oilcraft.proxy.IOilProxy;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
@@ -15,6 +17,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.Logger;
 
 @Mod(modid = ModData.ID, name = ModData.NAME, version = ModData.VERSION, dependencies = ModData.DEPS, guiFactory = ModData.GUI_FACTORY)
@@ -45,6 +48,8 @@ public class OilCraft {
         ModBlocks.registerTileEntities();
         ModFluids.registerFluids();
         ModFluids.registerFluidContainers();
+
+        PacketHandler.INSTANCE.registerMessage(PacketSBRTank.class, PacketSBRTank.class, PacketHandler.nextID(), Side.CLIENT);
 
         proxy.preInit();
     }
