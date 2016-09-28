@@ -1,22 +1,17 @@
 package me.werl.oilcraft.init;
 
 import me.werl.oilcraft.OilCraft;
-import me.werl.oilcraft.blocks.material.OCMaterialFluid;
 import me.werl.oilcraft.data.FluidData;
 import me.werl.oilcraft.data.ModData;
 import me.werl.oilcraft.fluids.BlockFluidCoolant;
 import me.werl.oilcraft.fluids.BlockFluidFuel;
 import me.werl.oilcraft.fluids.BlockFluidOil;
-import me.werl.oilcraft.fluids.BlockFluidOilC;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.MapColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.IFluidBlock;
+import net.minecraftforge.fluids.*;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.IForgeRegistry;

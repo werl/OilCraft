@@ -67,13 +67,11 @@ public class TileSBRefinery extends TileHeatGenerator {
                     ItemStack filled = FluidUtil.tryFillContainer(inv[3], outputTank, outputTank.getFluidAmount(), null, false);
                     if (filled != null) {
                         if(inv[4] == null) {
+                            inv[4] = FluidUtil.tryFillContainer(inv[3], outputTank, outputTank.getFluidAmount(), null, true);
+                            tankDirty = true;
                             inv[3].stackSize --;
                             if(inv[3].stackSize == 0) {
                                 inv[3] = null;
-                            }
-                            if(inv[3] != null) {
-                                inv[4] = FluidUtil.tryFillContainer(inv[3], outputTank, outputTank.getFluidAmount(), null, true);
-                                tankDirty = true;
                             }
                         } else if(inv[4].stackSize < inv[4].getItem().getItemStackLimit(inv[4])) {
                             FluidUtil.tryFillContainer(inv[3], outputTank, outputTank.getFluidAmount(), null, true);
@@ -90,7 +88,7 @@ public class TileSBRefinery extends TileHeatGenerator {
 
             if(tracker.markTimeIfDelay(worldObj) && temperature >= workTemp) {
                 if(inputTank.getFluid() != null && inputTank.getFluidAmount() >= mbPerCycle
-                        && outputTank.canFillFluidType(new FluidStack(ModFluids.FUEL, mbPerCycle))) {
+                        && outputTank.fill(new FluidStack(ModFluids.FUEL, mbPerCycle), false) == mbPerCycle) {
                     inputTank.drain(new FluidStack(ModFluids.OIL, mbPerCycle), true);
                     outputTank.fill(new FluidStack(ModFluids.FUEL, mbPerCycle), true);
                     tankDirty = true;
@@ -222,7 +220,6 @@ public class TileSBRefinery extends TileHeatGenerator {
             else if(inputFaces.contains(facing))
                 return (T) inputTank;
         }
-
 
         return super.getCapability(capability, facing);
     }
