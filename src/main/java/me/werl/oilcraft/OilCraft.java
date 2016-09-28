@@ -31,7 +31,7 @@ public class OilCraft {
 
     public Logger logger;
 
-    public static CreativeTabOilCraft creativeTab;
+    public static CreativeTabOilCraft creativeTab = new CreativeTabOilCraft();
 
     static {
         FluidRegistry.enableUniversalBucket(); // Must be called before preInit
@@ -40,8 +40,6 @@ public class OilCraft {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         this.logger = event.getModLog();
-
-        creativeTab = new CreativeTabOilCraft();
 
         Config.load(event);
 
