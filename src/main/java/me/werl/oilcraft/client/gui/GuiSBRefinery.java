@@ -1,16 +1,20 @@
 package me.werl.oilcraft.client.gui;
 
+import me.werl.oilcraft.client.render.RenderUtil;
 import me.werl.oilcraft.data.ModData;
 import me.werl.oilcraft.inventory.ContainerSBRefinery;
 import me.werl.oilcraft.tileentity.TileHeatGenerator;
 import me.werl.oilcraft.tileentity.TileSBRefinery;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 import scala.tools.cmd.gen.AnyVals;
 
 import java.util.ArrayList;
@@ -53,8 +57,15 @@ public class GuiSBRefinery extends GuiContainer {
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         int offsetX = (this.width - this.xSize) / 2;
         int offsetY = (this.height - this.ySize) / 2;
+
+        // Render Tank Contents
+        RenderUtil.renderGuiTank(tile.inputTank, 33, 19, zLevel, 16, 48);
+        RenderUtil.renderGuiTank(tile.outputTank, 127, 19, zLevel, 16, 48);
+
+        // Render heat tooltip
         drawTextWhenInArea(refinery.getField(2) + "C",mouseX, mouseY, 6, 15, 10, 71, offsetX, offsetY);
 
+        // Render input tank tooltip
         List<String> inputToolTip = new ArrayList<>();
         if(tile.inputTank.getFluid() != null) {
             inputToolTip.add(tile.inputTank.getFluidType().getLocalizedName(tile.inputTank.getFluid()));
@@ -64,6 +75,7 @@ public class GuiSBRefinery extends GuiContainer {
         }
         drawTextWhenInArea(inputToolTip, mouseX, mouseY, 33, 19, 49, 67, offsetX, offsetY);
 
+        // Render output tank tooltip
         List<String> outputToolTip = new ArrayList<>();
         if(tile.outputTank.getFluid() != null) {
             outputToolTip.add(tile.outputTank.getFluidType().getLocalizedName(tile.outputTank.getFluid()));
@@ -72,6 +84,7 @@ public class GuiSBRefinery extends GuiContainer {
             outputToolTip.add("Empty");
         }
         drawTextWhenInArea(outputToolTip, mouseX, mouseY, 127, 19, 143, 67, offsetX, offsetY);
+
 
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

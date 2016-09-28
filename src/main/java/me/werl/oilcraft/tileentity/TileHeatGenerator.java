@@ -126,6 +126,9 @@ public abstract class TileHeatGenerator extends TileInventory implements ITickab
         tag.setDouble("max_temperature", maxTemperature);
         tag.setBoolean("first_tick", firstTick);
 
+        // Just in case the world saves before facing is set
+        if(facing == null)
+            facing = EnumFacing.NORTH;
         tag.setString("facing", facing.getName());
         tag.setBoolean("is_active", isActive);
 
