@@ -6,7 +6,7 @@ My plans for this mod is to make a wide variety of fuels and other oil products 
 A longer term plan is to create a way of making renewable "oil" but that's quite a ways off.
 
 ## Currently working
-Not all that much, I have a Heat Generator that is going to be used to heat coolant that will be pumped into a refinery to transfer heat.
+Refinery is mostly working, but you currently can only use it manually.
 
 ## Liscence
 This mod is liscenced under the MIT Liscence.
