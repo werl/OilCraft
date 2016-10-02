@@ -1,5 +1,6 @@
 package me.werl.oilcraft.tileentity;
 
+import me.werl.oilcraft.data.ModData;
 import me.werl.oilcraft.fluids.MultiTankFluidHandler;
 import me.werl.oilcraft.fluids.MultiTankFluidMachineHandler;
 import me.werl.oilcraft.fluids.tanks.FilteredTank;
@@ -172,7 +173,7 @@ public class TileSBRefinery extends TileHeatGenerator implements IIoConfigurable
 
     @Override
     public String getName() {
-        return null;
+        return ModData.RESOURCE_PREFIX + "tile.sb_refinery.name";
     }
 
     @Override
