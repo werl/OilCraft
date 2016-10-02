@@ -1,5 +1,6 @@
 package me.werl.oilcraft.fluids.tanks;
 
+import me.werl.oilcraft.tileentity.interfaces.ITankUpdate;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -86,7 +87,9 @@ public class FilteredTank extends FluidTank implements INBTSerializable<NBTTagCo
     }
 
     public int getAvailableCapacity() {
-        return capacity - getFluidAmount();
+        if(fluid == null)
+            return capacity;
+        return capacity - fluid.amount;
     }
 
     @Override
@@ -134,5 +137,12 @@ public class FilteredTank extends FluidTank implements INBTSerializable<NBTTagCo
     public void setFluid(@Nullable FluidStack fluid) {
         if(fluid == null || this.filter.test(fluid))
             super.setFluid(fluid);
+    }
+
+    @Override
+    protected void onContentsChanged() {
+        if(tile instanceof ITankUpdate) {
+            ((ITankUpdate)tile).tankUpdate();
+        }
     }
 }

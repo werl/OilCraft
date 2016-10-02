@@ -7,6 +7,7 @@ import me.werl.oilcraft.init.ModFluids;
 import me.werl.oilcraft.network.PacketHandler;
 import me.werl.oilcraft.network.PacketSBRTank;
 import me.werl.oilcraft.tileentity.interfaces.IIoConfigurable;
+import me.werl.oilcraft.tileentity.interfaces.ITankUpdate;
 import me.werl.oilcraft.util.EnumIoMode;
 import me.werl.oilcraft.util.IoModeWrapper;
 import me.werl.oilcraft.util.SafeTimeTracker;
@@ -21,7 +22,7 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class TileSBRefinery extends TileHeatGenerator implements IIoConfigurable {
+public class TileSBRefinery extends TileHeatGenerator implements IIoConfigurable, ITankUpdate {
 
     private SafeTimeTracker tracker = new SafeTimeTracker(5);
 
@@ -92,10 +93,10 @@ public class TileSBRefinery extends TileHeatGenerator implements IIoConfigurable
             }
 
             if(tracker.markTimeIfDelay(worldObj) && temperature >= workTemp) {
-                if(inputTank.getFluid() != null && inputTank.getAvailableCapacity() >= mbPerCycle
-                        && outputTank.getCapacity() >= mbPerCycle) {
+                if(inputTank.getFluid() != null && inputTank.getFluidAmount() >= mbPerCycle
+                        && outputTank.getAvailableCapacity() >= mbPerCycle) {
                     inputTank.setFluid(new FluidStack(ModFluids.OIL, inputTank.getFluidAmount() - mbPerCycle));
-                    outputTank.setFluid(new FluidStack(ModFluids.FUEL, mbPerCycle + inputTank.getFluidAmount()));
+                    outputTank.setFluid(new FluidStack(ModFluids.FUEL, mbPerCycle + outputTank.getFluidAmount()));
                     tankDirty = true;
                 }
             }
@@ -245,6 +246,13 @@ public class TileSBRefinery extends TileHeatGenerator implements IIoConfigurable
         return pos;
     }
     // IIoConfigurable end
+
+    // ITankUpdate start
+    @Override
+    public void tankUpdate() {
+        PacketHandler.sendToAllAround(new PacketSBRTank(this), this);
+    }
+    // ITankUpdate end
 
     // Capability helpers start
     private MultiTankFluidHandler tankHandler;
