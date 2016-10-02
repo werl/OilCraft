@@ -1,13 +1,19 @@
 package me.werl.oilcraft.tileentity;
 
+import me.werl.oilcraft.fluids.MultiTankFluidHandler;
+import me.werl.oilcraft.fluids.MultiTankFluidMachineHandler;
 import me.werl.oilcraft.fluids.tanks.FilteredTank;
 import me.werl.oilcraft.init.ModFluids;
 import me.werl.oilcraft.network.PacketHandler;
 import me.werl.oilcraft.network.PacketSBRTank;
+import me.werl.oilcraft.tileentity.interfaces.IIoConfigurable;
+import me.werl.oilcraft.util.EnumIoMode;
+import me.werl.oilcraft.util.IoModeWrapper;
 import me.werl.oilcraft.util.SafeTimeTracker;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -15,18 +21,13 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-
-import java.util.ArrayList;
-import java.util.List;
-
-public class TileSBRefinery extends TileHeatGenerator {
+public class TileSBRefinery extends TileHeatGenerator implements IIoConfigurable {
 
     private SafeTimeTracker tracker = new SafeTimeTracker(5);
 
     private int mbPerCycle = 10;
 
-    private List<EnumFacing> outputFaces = new ArrayList<>();
-    private List<EnumFacing> inputFaces = new ArrayList<>();
+    private IoModeWrapper ioModeWrapper;
 
     public FilteredTank inputTank = new FilteredTank("input", 16 * Fluid.BUCKET_VOLUME, this);
     public FilteredTank outputTank = new FilteredTank("output", 16 * Fluid.BUCKET_VOLUME, this);
@@ -35,6 +36,10 @@ public class TileSBRefinery extends TileHeatGenerator {
 
     public TileSBRefinery() {
         super(5, 0);
+
+        inputTank.setCanDrain(false);
+        outputTank.setCanFill(false);
+        ioModeWrapper = new IoModeWrapper(EnumIoMode.DISABLED, EnumIoMode.DISABLED, EnumIoMode.DISABLED, EnumIoMode.DISABLED, EnumIoMode.INSERT, EnumIoMode.EXTRACT);
     }
 
     // ITickable start
@@ -87,10 +92,10 @@ public class TileSBRefinery extends TileHeatGenerator {
             }
 
             if(tracker.markTimeIfDelay(worldObj) && temperature >= workTemp) {
-                if(inputTank.getFluid() != null && inputTank.getFluidAmount() >= mbPerCycle
-                        && outputTank.fill(new FluidStack(ModFluids.FUEL, mbPerCycle), false) == mbPerCycle) {
-                    inputTank.drain(new FluidStack(ModFluids.OIL, mbPerCycle), true);
-                    outputTank.fill(new FluidStack(ModFluids.FUEL, mbPerCycle), true);
+                if(inputTank.getFluid() != null && inputTank.getAvailableCapacity() >= mbPerCycle
+                        && outputTank.getCapacity() >= mbPerCycle) {
+                    inputTank.setFluid(new FluidStack(ModFluids.OIL, inputTank.getFluidAmount() - mbPerCycle));
+                    outputTank.setFluid(new FluidStack(ModFluids.FUEL, mbPerCycle + inputTank.getFluidAmount()));
                     tankDirty = true;
                 }
             }
@@ -121,6 +126,8 @@ public class TileSBRefinery extends TileHeatGenerator {
     public void readFromNBT(NBTTagCompound tag) {
         super.readFromNBT(tag);
 
+        ioModeWrapper.readFromNBT(tag);
+
         inputTank.readFromNBT(tag);
         outputTank.readFromNBT(tag);
     }
@@ -129,6 +136,8 @@ public class TileSBRefinery extends TileHeatGenerator {
     public NBTTagCompound writeToNBT(NBTTagCompound tag) {
         inputTank.writeToNBT(tag);
         outputTank.writeToNBT(tag);
+
+        ioModeWrapper.writeToNBT(tag);
 
         return super.writeToNBT(tag);
     }
@@ -204,21 +213,65 @@ public class TileSBRefinery extends TileHeatGenerator {
     }
     // IItemHandler end
 
+    // IIoConfigurable start
+    @Override
+    public EnumIoMode toggleModeForFace(EnumFacing face) {
+        ioModeWrapper.setIoMode(face, ioModeWrapper.getMode(face).getNext());
+        return ioModeWrapper.getMode(face);
+    }
+
+    @Override
+    public boolean supportsMode(EnumFacing face, EnumIoMode mode) {
+        return ioModeWrapper.getMode(face) == mode;
+    }
+
+    @Override
+    public void setIoMode(EnumFacing facing, EnumIoMode mode) {
+        ioModeWrapper.setIoMode(facing, mode);
+    }
+
+    @Override
+    public EnumIoMode getMode(EnumFacing face) {
+        return ioModeWrapper.getMode(face);
+    }
+
+    @Override
+    public void clearAllModes() {
+        ioModeWrapper = new IoModeWrapper();
+    }
+
+    @Override
+    public BlockPos getLocation() {
+        return pos;
+    }
+    // IIoConfigurable end
+
+    // Capability helpers start
+    private MultiTankFluidHandler tankHandler;
+
+    protected MultiTankFluidHandler getMultiTankFluidHandler() {
+        if(tankHandler == null) {
+            tankHandler = new MultiTankFluidMachineHandler(this, inputTank, outputTank);
+        }
+        return tankHandler;
+    }
+    // Capability helpers end
+
     // Capability
     @Override
     public boolean hasCapability (Capability<?> capability, EnumFacing facing) {
 
-        return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
+        if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+            return getMultiTankFluidHandler().has(facing);
+
+        return super.hasCapability(capability, facing);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getCapability (Capability<T> capability, EnumFacing facing) {
         if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            if(outputFaces.contains(facing))
-                return (T) outputTank;
-            else if(inputFaces.contains(facing))
-                return (T) inputTank;
+            return (T) getMultiTankFluidHandler().get(facing);
         }
 
         return super.getCapability(capability, facing);

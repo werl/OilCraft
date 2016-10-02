@@ -60,11 +60,33 @@ public class FilteredTank extends FluidTank implements INBTSerializable<NBTTagCo
         return stack != null ? stack.getFluid() : null;
     }
 
+    public boolean canFill(FluidStack stack) {
+        if(!canFillFluidType(stack)) {
+            return false;
+        } else if(fluid != null) {
+            return fluid.isFluidEqual(stack);
+        } else {
+            return true;
+        }
+    }
+
+    public boolean canDrain(FluidStack stack) {
+        if(fluid == null || stack == null || !canDrain()) {
+            return false;
+        }
+
+        return stack.isFluidEqual(fluid);
+    }
+
     @Override
     public NBTTagCompound serializeNBT() {
         NBTTagCompound tag = new NBTTagCompound();
         writeToNBT(tag);
         return tag;
+    }
+
+    public int getAvailableCapacity() {
+        return capacity - getFluidAmount();
     }
 
     @Override

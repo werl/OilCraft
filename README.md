@@ -12,4 +12,4 @@ Refinery is mostly working, but you currently can only use it manually.
 This mod is liscenced under the MIT Liscence.
 
 ## Modpacks
-Go ahead, I do ask that you link to the Curse page (when I get around to getting that up). 
+Go ahead, I do ask that you link to the Curse page (when I get around to getting that up).
