@@ -6,7 +6,7 @@ My plans for this mod is to make a wide variety of fuels and other oil products 
 A longer term plan is to create a way of making renewable "oil" but that's quite a ways off.
 
 ## Currently working
-Refinery is mostly working, but you currently can only use it manually.
+Refinery is mostly working, but siddedness is only editable through the code or NBT
 
 ## Liscence
 This mod is liscenced under the MIT Liscence.
