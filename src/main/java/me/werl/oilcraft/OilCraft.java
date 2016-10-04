@@ -2,10 +2,7 @@ package me.werl.oilcraft;
 
 import me.werl.oilcraft.config.Config;
 import me.werl.oilcraft.data.ModData;
-import me.werl.oilcraft.init.ModBlocks;
-import me.werl.oilcraft.init.ModFluids;
-import me.werl.oilcraft.init.ModItems;
-import me.werl.oilcraft.init.ModMapGen;
+import me.werl.oilcraft.init.*;
 import me.werl.oilcraft.network.GuiHandler;
 import me.werl.oilcraft.network.PacketHandler;
 import me.werl.oilcraft.network.PacketSBRTank;
@@ -46,6 +43,7 @@ public class OilCraft {
         ModBlocks.registerTileEntities();
         ModFluids.registerFluids();
         ModFluids.registerFluidContainers();
+        ModRecipes.registerRecipes();
 
         PacketHandler.INSTANCE.registerMessage(PacketSBRTank.class, PacketSBRTank.class, PacketHandler.nextID(), Side.CLIENT);
 

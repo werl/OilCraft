@@ -1,5 +1,6 @@
 package me.werl.oilcraft.tileentity;
 
+import me.werl.oilcraft.custom_recipes.RefineryRecipe;
 import me.werl.oilcraft.data.ModData;
 import me.werl.oilcraft.fluids.MultiTankFluidHandler;
 import me.werl.oilcraft.fluids.MultiTankFluidMachineHandler;
@@ -23,9 +24,10 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class TileSBRefinery extends TileHeatGenerator implements IIoConfigurable, ITankUpdate {
+import java.util.ArrayList;
+import java.util.List;
 
-    private SafeTimeTracker tracker = new SafeTimeTracker(5);
+public class TileSBRefinery extends TileHeatGenerator implements IIoConfigurable, ITankUpdate {
 
     private int mbPerCycle = 10;
 
@@ -35,6 +37,11 @@ public class TileSBRefinery extends TileHeatGenerator implements IIoConfigurable
     public FilteredTank outputTank = new FilteredTank("output", 16 * Fluid.BUCKET_VOLUME, this);
 
     private double workTemp = 400;
+
+    private RefineryRecipe currentRecipe;
+    private List<RefineryRecipe> possableRecipes = new ArrayList<>();
+    private boolean needPlayerInput = false;
+    private boolean autoRecipe = true;
 
     public TileSBRefinery() {
         super(5, 0);
@@ -52,57 +59,31 @@ public class TileSBRefinery extends TileHeatGenerator implements IIoConfigurable
         if(!worldObj.isRemote) {
             boolean tankDirty = false;
 
-            if(canDrainItem(1, 2)) {
-                ItemStack container = inv[1].getItem().getContainerItem(inv[1]);
-                if(FluidUtil.tryFluidTransfer(inputTank, FluidUtil.getFluidHandler(inv[1]), inputTank.getCapacity() - inputTank.getFluidAmount(), true) != null) {
-                    if(container != null) {
-                        if(inv[2] == null) {
-                            inv[2] = container;
-                        } else {
-                            inv[2].stackSize++;
-                        }
-                    }
-                    inv[1].stackSize--;
-                    if(inv[1].stackSize == 0) {
-                        inv[1] = null;
-                    }
-                    tankDirty = true;
-                }
+            if(tryDrainItem(1, 2, inputTank)){
+                tankDirty = true;
             }
-            if(inv[3] != null && inv[3].hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null)) {
-                if(FluidUtil.getFluidHandler(inv[3]) != null) {
-                    ItemStack filled = FluidUtil.tryFillContainer(inv[3], outputTank, outputTank.getFluidAmount(), null, false);
-                    if (filled != null) {
-                        if(inv[4] == null) {
-                            inv[4] = FluidUtil.tryFillContainer(inv[3], outputTank, outputTank.getFluidAmount(), null, true);
-                            tankDirty = true;
-                            inv[3].stackSize --;
-                            if(inv[3].stackSize == 0) {
-                                inv[3] = null;
-                            }
-                        } else if(inv[4].stackSize < inv[4].getItem().getItemStackLimit(inv[4])) {
-                            FluidUtil.tryFillContainer(inv[3], outputTank, outputTank.getFluidAmount(), null, true);
-                            inv[3].stackSize --;
-                            if(inv[3].stackSize == 0) {
-                                inv[3] = null;
-                            }
-                            inv[4].stackSize ++;
-                            tankDirty = true;
-                        }
-                    }
-                }
+            if(tryFillItem(3, 4, outputTank)) {
+                tankDirty = true;
             }
 
-            if(tracker.markTimeIfDelay(worldObj) && temperature >= workTemp) {
-                if(inputTank.getFluid() != null && inputTank.getFluidAmount() >= mbPerCycle
-                        && outputTank.getAvailableCapacity() >= mbPerCycle) {
-                    inputTank.setFluid(new FluidStack(ModFluids.OIL, inputTank.getFluidAmount() - mbPerCycle));
-                    outputTank.setFluid(new FluidStack(ModFluids.FUEL, mbPerCycle + outputTank.getFluidAmount()));
-                    tankDirty = true;
-                }
+            if(autoRecipe && currentRecipe == null) {
+                currentRecipe = testRecipe(inputTank);
             }
-            if(temperature < workTemp) {
-                tracker.markTime(worldObj);
+
+            if(currentRecipe != null) {
+                if(currentRecipe.isInTempRange(temperature)) {
+                    if(inputTank.drainInternal(currentRecipe.getInput(), false) != null
+                            && inputTank.drainInternal(currentRecipe.getInput(), false).amount == currentRecipe.getInputAmount()
+                            && outputTank.fillInternal(currentRecipe.getOutputs()[0], false) == currentRecipe.getOutputs()[0].amount) {
+                        inputTank.drainInternal(currentRecipe.getInput(), true);
+                        outputTank.fillInternal(currentRecipe.getOutputs()[0], true);
+                        tankDirty = true;
+                    } else if(autoRecipe) {
+                        currentRecipe = null;
+                    }
+                } else if(autoRecipe) {
+                    currentRecipe = null;
+                }
             }
             if(tankDirty) {
                 PacketHandler.sendToAllAround(new PacketSBRTank(this), this);
@@ -111,22 +92,89 @@ public class TileSBRefinery extends TileHeatGenerator implements IIoConfigurable
     }
     // ITickable end
 
-    private boolean canDrainItem(int in, int out) {
-        if(inv[in] == null)
+    private boolean tryDrainItem(int slotIn, int slotOut, FilteredTank tank) {
+        if(inv[slotIn] == null)
             return false;
-        if(inv[out] == null || inv[out].isItemEqual(inv[in].getItem().getContainerItem(inv[in]))) {
-            if(FluidUtil.getFluidHandler(inv[in]) != null) {
+        if(inv[slotOut] == null || inv[slotOut].isItemEqual(inv[slotIn].getItem().getContainerItem(inv[slotIn]))
+                && inv[slotOut].stackSize < inv[slotOut].getMaxStackSize()) {
+            ItemStack container = inv[slotIn].getItem().getContainerItem(inv[slotIn]);
+            if (FluidUtil.tryFluidTransfer(tank, FluidUtil.getFluidHandler(inv[slotIn]), tank.getCapacity() - tank.getFluidAmount(), true) != null) {
+                if (container != null) {
+                    if (inv[slotOut] == null) {
+                        inv[slotOut] = container;
+                    } else {
+                        inv[slotOut].stackSize++;
+                    }
+                }
+                inv[slotIn].stackSize--;
+                if (inv[slotIn].stackSize == 0) {
+                    inv[slotIn] = null;
+                }
                 return true;
+
+            }
+        }
+        return false;
+    }
+
+    private boolean tryFillItem(int slotIn, int slotOut, FilteredTank tank) {
+        if(inv[slotIn] != null && inv[slotIn].hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null)) {
+            if(FluidUtil.getFluidHandler(inv[slotIn]) != null) {
+                ItemStack filled = FluidUtil.tryFillContainer(inv[slotIn], tank, tank.getFluidAmount(), null, false);
+                if (filled != null) {
+                    if(inv[slotOut] == null) {
+                        inv[slotOut] = FluidUtil.tryFillContainer(inv[slotIn], tank, tank.getFluidAmount(), null, true);
+                        inv[slotIn].stackSize --;
+                        if(inv[slotIn].stackSize == 0) {
+                            inv[slotIn] = null;
+                        }
+                        return true;
+                    } else if(inv[slotOut].stackSize < inv[slotOut].getItem().getItemStackLimit(inv[slotOut])) {
+                        FluidUtil.tryFillContainer(inv[slotIn], tank, tank.getFluidAmount(), null, true);
+                        inv[slotIn].stackSize --;
+                        if(inv[slotIn].stackSize == 0) {
+                            inv[slotIn] = null;
+                        }
+                        inv[slotOut].stackSize ++;
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private RefineryRecipe testRecipe(FilteredTank inTank) {
+        List<RefineryRecipe> matching = new ArrayList<>();
+
+        for(RefineryRecipe rec : RefineryRecipe.RECIPES) {
+            if(inTank.drainInternal(rec.getInput(), false) != null && rec.isInTempRange(temperature)) {
+                matching.add(rec);
             }
         }
 
-        return false;
+        if(matching.size() == 1) {
+            return matching.get(0);
+        } else if(matching.size() > 1) {
+            needPlayerInput = true;
+            possableRecipes = matching;
+            return null;
+        } else {
+            return null;
+        }
+    }
+
+    public void setRecipe(RefineryRecipe recipe) {
+        this.currentRecipe = recipe;
     }
 
     // NBT start
     @Override
     public void readFromNBT(NBTTagCompound tag) {
         super.readFromNBT(tag);
+
+        autoRecipe = tag.getBoolean("auto_recipe");
+        needPlayerInput = tag.getBoolean("need_player_input");
 
         ioModeWrapper.readFromNBT(tag);
 
@@ -140,6 +188,9 @@ public class TileSBRefinery extends TileHeatGenerator implements IIoConfigurable
         outputTank.writeToNBT(tag);
 
         ioModeWrapper.writeToNBT(tag);
+
+        tag.setBoolean("auto_recipe", autoRecipe);
+        tag.setBoolean("need_player_input", needPlayerInput);
 
         return super.writeToNBT(tag);
     }
