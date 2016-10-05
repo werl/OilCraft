@@ -20,7 +20,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 
-public abstract class TileHeatGenerator extends TileInventory implements ITickable, IFacingTile, IActivatableTile {
+public abstract class TileHeatGenerator extends TileMachine implements ITickable {
 
     protected boolean firstTick = true;
 
@@ -30,12 +30,9 @@ public abstract class TileHeatGenerator extends TileInventory implements ITickab
     protected double startTemp;
     protected double maxTemperature;
 
-    protected EnumFacing facing;
-    protected boolean isActive;
-
     protected int fuelSlot;
 
-    public TileHeatGenerator(int inventorySize, int fuelSlot) {
+    protected TileHeatGenerator(int inventorySize, int fuelSlot) {
         super(inventorySize);
         this.fuelSlot = fuelSlot;
     }
@@ -90,13 +87,14 @@ public abstract class TileHeatGenerator extends TileInventory implements ITickab
             }
             if (currentActive != isBurning()) {
                 makeDirty = true;
-                BlockMachine.setState(this.isBurning(), facing, worldObj, pos);
-                this.isActive = this.isBurning();
+                changeActivity(isBurning());
             }
         }
 
-        if(makeDirty)
+        if(makeDirty) {
             this.markDirty();
+        }
+        super.update();
     }
 
     // NBT start
@@ -110,11 +108,6 @@ public abstract class TileHeatGenerator extends TileInventory implements ITickab
         this.startTemp = tag.getDouble("start_temp");
         this.maxTemperature = tag.getDouble("max_temperature");
         this.firstTick = tag.getBoolean("first_tick");
-
-        this.facing = EnumFacing.byName(tag.getString("facing"));
-        if(facing == null)
-            facing = EnumFacing.NORTH;
-        this.isActive = tag.getBoolean("is_active");
     }
 
     @Override
@@ -125,12 +118,6 @@ public abstract class TileHeatGenerator extends TileInventory implements ITickab
         tag.setDouble("start_temp", startTemp);
         tag.setDouble("max_temperature", maxTemperature);
         tag.setBoolean("first_tick", firstTick);
-
-        // Just in case the world saves before facing is set
-        if(facing == null)
-            facing = EnumFacing.NORTH;
-        tag.setString("facing", facing.getName());
-        tag.setBoolean("is_active", isActive);
 
         return super.writeToNBT(tag);
     }
@@ -197,32 +184,6 @@ public abstract class TileHeatGenerator extends TileInventory implements ITickab
         return 4;
     }
     // IInventory End
-
-    // IFacingTile start
-    public EnumFacing getFacing() {
-        return facing;
-    }
-
-    public void setFacing(EnumFacing facing) {
-        if(facing == null)
-            return;
-        this.facing = facing;
-        this.markDirty();
-    }
-    // IFacingTile end
-
-    // IActivatableTile start
-    @Override
-    public boolean isActive() {
-        return isActive;
-    }
-
-    @Override
-    public void setActive(boolean active) {
-        this.isActive = active;
-        this.markDirty();
-    }
-    // IActivatableTile end
 
     // Capability
     @Override

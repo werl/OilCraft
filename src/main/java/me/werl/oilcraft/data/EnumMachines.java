@@ -4,7 +4,8 @@ import me.werl.oilcraft.util.IVariant;
 
 public enum EnumMachines implements IVariant {
 
-    SB_REFINERY("sb_refinery");
+    SB_REFINERY("sb_refinery"),
+    COMBO_FURNACE("combo_furnace");
 
     private final String name;
 

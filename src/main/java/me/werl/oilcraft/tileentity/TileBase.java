@@ -3,7 +3,7 @@ package me.werl.oilcraft.tileentity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
-public class TileBase extends TileEntity {
+public abstract class TileBase extends TileEntity {
 
     @Override
     public NBTTagCompound getUpdateTag() {
@@ -15,7 +15,5 @@ public class TileBase extends TileEntity {
 
         return writeToNBT(tagCompound);
     }
-
-
 
 }

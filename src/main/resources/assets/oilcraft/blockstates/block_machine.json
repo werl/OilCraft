@@ -11,6 +11,14 @@
           "top": "oilcraft:blocks/base_texture",
           "side": "oilcraft:blocks/base_texture"
         }
+      },
+      "triple_furnace": {
+        "textures": {
+          "front": "oilcraft:blocks/triple_furnace",
+          "front_on": "oilcraft:blocks/triple_furnace_on",
+          "top": "minecraft:blocks/iron_block",
+          "side": "minecraft:blocks/iron_block"
+        }
       }
     },
 

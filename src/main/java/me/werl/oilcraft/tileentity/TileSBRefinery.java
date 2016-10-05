@@ -11,6 +11,7 @@ import me.werl.oilcraft.network.PacketSBRTank;
 import me.werl.oilcraft.tileentity.interfaces.IIoConfigurable;
 import me.werl.oilcraft.tileentity.interfaces.ITankUpdate;
 import me.werl.oilcraft.util.EnumIoMode;
+import me.werl.oilcraft.util.FuelUtil;
 import me.werl.oilcraft.util.IoModeWrapper;
 import me.werl.oilcraft.util.SafeTimeTracker;
 import net.minecraft.item.ItemStack;
@@ -92,53 +93,57 @@ public class TileSBRefinery extends TileHeatGenerator implements IIoConfigurable
     }
     // ITickable end
 
+    // FIXME: 2016-10-04 #17
     private boolean tryDrainItem(int slotIn, int slotOut, FilteredTank tank) {
-        if(inv[slotIn] == null)
+        if(inv[slotIn] == null) {
             return false;
-        if(inv[slotOut] == null || inv[slotOut].isItemEqual(inv[slotIn].getItem().getContainerItem(inv[slotIn]))
-                && inv[slotOut].stackSize < inv[slotOut].getMaxStackSize()) {
-            ItemStack container = inv[slotIn].getItem().getContainerItem(inv[slotIn]);
-            if (FluidUtil.tryFluidTransfer(tank, FluidUtil.getFluidHandler(inv[slotIn]), tank.getCapacity() - tank.getFluidAmount(), true) != null) {
-                if (container != null) {
-                    if (inv[slotOut] == null) {
-                        inv[slotOut] = container;
-                    } else {
-                        inv[slotOut].stackSize++;
+        }
+        ItemStack output = FluidUtil.tryEmptyContainer(inv[slotIn], tank, tank.getAvailableCapacity(), null, false);
+        if(output != null) {
+            if(inv[slotOut] == null && output.stackSize != 0) {
+                if(inv[slotOut] == null) {
+                    inv[slotOut] = FluidUtil.tryEmptyContainer(inv[slotIn], tank, tank.getAvailableCapacity(), null, true);
+                    inv[slotIn].stackSize --;
+                    if(inv[slotIn].stackSize == 0) {
+                        inv[slotIn] = null;
                     }
+                    return true;
+                } else if(inv[slotOut].stackSize < inv[slotOut].getMaxStackSize() && inv[slotOut].isItemEqual(output)) {
+                    FluidUtil.tryEmptyContainer(inv[slotIn], tank, tank.getAvailableCapacity(), null, true);
+                    inv[slotIn].stackSize --;
+                    if(inv[slotIn].stackSize == 0) {
+                        inv[slotIn] = null;
+                    }
+                    inv[slotOut].stackSize ++;
+                    return true;
                 }
-                inv[slotIn].stackSize--;
-                if (inv[slotIn].stackSize == 0) {
-                    inv[slotIn] = null;
-                }
-                return true;
-
             }
         }
+
         return false;
     }
 
     private boolean tryFillItem(int slotIn, int slotOut, FilteredTank tank) {
-        if(inv[slotIn] != null && inv[slotIn].hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null)) {
-            if(FluidUtil.getFluidHandler(inv[slotIn]) != null) {
-                ItemStack filled = FluidUtil.tryFillContainer(inv[slotIn], tank, tank.getFluidAmount(), null, false);
-                if (filled != null) {
-                    if(inv[slotOut] == null) {
-                        inv[slotOut] = FluidUtil.tryFillContainer(inv[slotIn], tank, tank.getFluidAmount(), null, true);
-                        inv[slotIn].stackSize --;
-                        if(inv[slotIn].stackSize == 0) {
-                            inv[slotIn] = null;
-                        }
-                        return true;
-                    } else if(inv[slotOut].stackSize < inv[slotOut].getItem().getItemStackLimit(inv[slotOut])) {
-                        FluidUtil.tryFillContainer(inv[slotIn], tank, tank.getFluidAmount(), null, true);
-                        inv[slotIn].stackSize --;
-                        if(inv[slotIn].stackSize == 0) {
-                            inv[slotIn] = null;
-                        }
-                        inv[slotOut].stackSize ++;
-                        return true;
-                    }
+        if(inv[slotIn] == null) {
+            return false;
+        }
+        ItemStack filled = FluidUtil.tryFillContainer(inv[slotIn], tank, tank.getFluidAmount(), null, false);
+        if (filled != null) {
+            if(inv[slotOut] == null) {
+                inv[slotOut] = FluidUtil.tryFillContainer(inv[slotIn], tank, tank.getFluidAmount(), null, true);
+                inv[slotIn].stackSize --;
+                if(inv[slotIn].stackSize == 0) {
+                    inv[slotIn] = null;
                 }
+                return true;
+            } else if(inv[slotOut].stackSize < inv[slotOut].getMaxStackSize() && inv[slotOut].isItemEqual(filled)) {
+                FluidUtil.tryFillContainer(inv[slotIn], tank, tank.getFluidAmount(), null, true);
+                inv[slotIn].stackSize --;
+                if(inv[slotIn].stackSize == 0) {
+                    inv[slotIn] = null;
+                }
+                inv[slotOut].stackSize ++;
+                return true;
             }
         }
         return false;
